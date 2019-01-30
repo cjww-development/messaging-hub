@@ -5,7 +5,6 @@ bin/
 /lib/
 /logs/
 /modules
-/project/project
 /project/target
 /target
 tmp/
@@ -14,3 +13,12 @@ server.pid
 *.eml
 /dist/
 .cache
+.DS_Store
+.idea
+.idea/
+.idea/*
+/.idea
+/.idea/
+/.idea/*
+Procfile
+project/project/
