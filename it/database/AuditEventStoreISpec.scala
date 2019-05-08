@@ -20,13 +20,18 @@ import com.cjwwdev.mongo.responses.{MongoFailedCreate, MongoSuccessCreate}
 import helpers.{IntegrationSpec, TestDataGenerator}
 import models.auditing.Event
 import models.common.MessageTypes
+import play.api.Configuration
 import play.api.libs.json.Json
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json._
 
 class AuditEventStoreISpec extends IntegrationSpec with TestDataGenerator {
 
-  val auditEventStore: AuditEventStore = app.injector.instanceOf[AuditEventStore]
+  val auditEventStore: AuditEventStore = new DefaultAuditEventStore(Configuration(
+    "database.DefaultAuditEventStore.uri"        -> "mongodb://localhost:27017",
+    "database.DefaultAuditEventStore.database"   -> "test-messaging-hub-db",
+    "database.DefaultAuditEventStore.collection" -> "test-audit-event-store"
+  ))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

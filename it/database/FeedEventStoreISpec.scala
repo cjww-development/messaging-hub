@@ -20,12 +20,17 @@ import com.cjwwdev.mongo.responses.{MongoFailedCreate, MongoSuccessCreate}
 import helpers.{IntegrationSpec, TestDataGenerator}
 import models.common.MessageTypes
 import models.feed.{Detail, Event}
+import play.api.Configuration
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json._
 
 class FeedEventStoreISpec extends IntegrationSpec with TestDataGenerator {
 
-  val feedEventStore: FeedEventStore = app.injector.instanceOf[FeedEventStore]
+  val feedEventStore: FeedEventStore = new DefaultFeedEventStore(Configuration(
+    "database.DefaultFeedEventStore.uri"         -> "mongodb://localhost:27017",
+    "database.DefaultFeedEventStore.database"    -> "test-messaging-hub-db",
+    "database.DefaultFeedEventStore.collection"  -> "test-feed-event-store",
+  ))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
