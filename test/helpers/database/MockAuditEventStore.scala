@@ -18,6 +18,7 @@ package helpers.database
 
 import com.cjwwdev.mongo.responses.{MongoCreateResponse, MongoFailedCreate, MongoSuccessCreate}
 import database.AuditEventStore
+import models.auditing.Event
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.mockito.stubbing.OngoingStubbing
@@ -40,5 +41,10 @@ trait MockAuditEventStore extends BeforeAndAfterEach with MockitoSugar {
   def mockInsertAuditEvent(inserted: Boolean): OngoingStubbing[Future[MongoCreateResponse]] = {
     when(mockAuditEventStore.insertAuditEvent(any())(any()))
       .thenReturn(if(inserted) Future.successful(MongoSuccessCreate) else Future.successful(MongoFailedCreate))
+  }
+
+  def mockRetrieveAuditEvents(events: List[Event]): OngoingStubbing[Future[List[Event]]] = {
+    when(mockAuditEventStore.retrieveAuditEvents(any(), any())(any()))
+      .thenReturn(Future.successful(events))
   }
 }

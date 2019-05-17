@@ -68,4 +68,12 @@ object Event extends EventFormatting[Event] with EnvReads with EnvWrites with Ti
     (__ \ "eventCode").format[Int] and
     (__ \ "detail").format[JsValue]
   )(Event.apply, unlift(Event.unapply))
+
+  implicit val outboundSeq: Writes[Seq[Event]] = new Writes[Seq[Event]] {
+    override def writes(o: Seq[Event]): JsValue = {
+      o.foldRight(Json.arr()) { (event, json) =>
+        json ++ Json.arr(Json.toJson(event)(outboundFormat))
+      }
+    }
+  }
 }

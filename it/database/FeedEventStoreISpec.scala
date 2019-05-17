@@ -31,7 +31,7 @@ class FeedEventStoreISpec extends IntegrationSpec with TestDataGenerator {
   val feedEventStore: FeedEventStore = new DefaultFeedEventStore(Configuration(
     "database.DefaultFeedEventStore.uri"         -> "mongodb://localhost:27017",
     "database.DefaultFeedEventStore.database"    -> "test-messaging-hub-db",
-    "database.DefaultFeedEventStore.collection"  -> "test-feed-event-store",
+    "database.DefaultFeedEventStore.collection"  -> "test-feed-event-store"
   ))
 
   override def beforeEach(): Unit = {
