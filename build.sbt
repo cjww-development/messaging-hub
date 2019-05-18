@@ -15,7 +15,9 @@
  */
 
 import com.typesafe.config.ConfigFactory
+import com.typesafe.sbt.packager.docker.Cmd
 import scoverage.ScoverageKeys
+
 import scala.util.{Failure, Success, Try}
 
 val appName = "messaging-hub"
@@ -55,5 +57,14 @@ lazy val microservice = Project(appName, file("."))
     bintrayOmitLicense                            :=  true,
     Keys.fork in IntegrationTest                  :=  false,
     unmanagedSourceDirectories in IntegrationTest :=  (baseDirectory in IntegrationTest)(base => Seq(base / "it")).value,
-    parallelExecution in IntegrationTest          :=  false
+    parallelExecution in IntegrationTest          :=  false,
+    dockerRepository                              :=  Some("cjwwdevelopment"),
+    dockerCommands                                :=  Seq(
+      Cmd("FROM", "openjdk:8u181-jdk"),
+      Cmd("WORKDIR", "/opt/docker"),
+      Cmd("ADD", "--chown=daemon:daemon opt /opt"),
+      Cmd("USER", "daemon"),
+      Cmd("ENTRYPOINT", """["/opt/docker/bin/messaging-hub"]"""),
+      Cmd("CMD", """[]""")
+    )
   )
