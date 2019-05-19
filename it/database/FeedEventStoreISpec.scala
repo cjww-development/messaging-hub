@@ -24,6 +24,8 @@ import play.api.Configuration
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json._
 
+import scala.concurrent.Future
+
 class FeedEventStoreISpec extends IntegrationSpec with TestDataGenerator {
 
   val feedEventStore: FeedEventStore = new DefaultFeedEventStore(Configuration(
@@ -35,6 +37,11 @@ class FeedEventStoreISpec extends IntegrationSpec with TestDataGenerator {
   override def beforeEach(): Unit = {
     super.beforeEach()
     await(feedEventStore.collection.flatMap(_.remove(BSONDocument())))
+  }
+
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    await(Future.sequence(feedEventStore.indexes map feedEventStore.ensureSingleIndex))
   }
 
   "insertFeedEvent" should {

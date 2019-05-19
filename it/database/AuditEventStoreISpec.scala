@@ -25,6 +25,8 @@ import play.api.libs.json.Json
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json._
 
+import scala.concurrent.Future
+
 class AuditEventStoreISpec extends IntegrationSpec with TestDataGenerator {
 
   val auditEventStore: AuditEventStore = new DefaultAuditEventStore(Configuration(
@@ -36,6 +38,11 @@ class AuditEventStoreISpec extends IntegrationSpec with TestDataGenerator {
   override def beforeEach(): Unit = {
     super.beforeEach()
     await(auditEventStore.collection.flatMap(_.remove(BSONDocument())))
+  }
+
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    await(Future.sequence(auditEventStore.indexes map auditEventStore.ensureSingleIndex))
   }
 
   "insertAuditEvent" should {
