@@ -37,6 +37,7 @@ class FetchAuditEventsISpec extends IntegrationSpec with IntegrationApplication 
     "database.DefaultAuditEventStore.collection" -> "test-audit-event-store",
     "database.DefaultFeedEventStore.database"    -> "test-messaging-hub-db",
     "database.DefaultFeedEventStore.collection"  -> "test-feed-event-store",
+    "play.modules.disabled"                      -> List("global.MessagePollingBindings")
   )
 
   val repo = app.injector.instanceOf[AuditEventStore]

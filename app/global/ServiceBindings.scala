@@ -29,7 +29,7 @@ import services.{DefaultFetchService, FetchService, PollingService}
 
 class ServiceBindings extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
-    bindGlobals() ++ bindRabbit() ++ bindJobs() ++ bindServices() ++ bindStores() ++ bindControllers()
+    bindGlobals() ++ bindServices() ++ bindStores() ++ bindControllers()
   }
 
   def bindGlobals(): Seq[Binding[_]] = Seq(
@@ -39,20 +39,12 @@ class ServiceBindings extends Module {
     bind(classOf[MessagingHubIndexing]).toSelf.eagerly()
   )
 
-  def bindRabbit(): Seq[Binding[_]] = Seq(
-    bind(classOf[Receiver]).to(classOf[DefaultReceiver]).eagerly()
-  )
-
-  def bindJobs(): Seq[Binding[_]] = Seq(
-    bind(classOf[MessagePollingJob]).toSelf.eagerly()
-  )
 
   private def bindControllers(): Seq[Binding[_]] = Seq(
     bind(classOf[QueryController]).to(classOf[DefaultQueryController]).eagerly()
   )
 
   def bindServices(): Seq[Binding[_]] = Seq(
-    bind(classOf[PollingService]).toSelf.eagerly(),
     bind(classOf[FetchService]).to(classOf[DefaultFetchService]).eagerly()
   )
 
