@@ -112,13 +112,13 @@ class AuditEventStoreISpec extends IntegrationSpec with TestDataGenerator {
 
       await(auditEventStore.insertAuditEvent(auditEvent))
 
-      awaitAndAssert(auditEventStore.retrieveAuditEvent(BSONDocument("correlationId" -> auditEvent.correlationId))) {
+      awaitAndAssert(auditEventStore.retrieveAuditEvent(Json.obj("correlationId" -> auditEvent.correlationId))) {
         _ mustBe Some(auditEvent)
       }
     }
 
     "return no feed event" in {
-      awaitAndAssert(auditEventStore.retrieveAuditEvent(BSONDocument("correlationId" -> generateTestSystemId("correlationId")))) {
+      awaitAndAssert(auditEventStore.retrieveAuditEvent(Json.obj("correlationId" -> generateTestSystemId("correlationId")))) {
         _ mustBe None
       }
     }
@@ -143,7 +143,7 @@ class AuditEventStoreISpec extends IntegrationSpec with TestDataGenerator {
 
       await(auditEventStore.insertAuditEvent(auditEvent))
 
-      awaitAndAssert(auditEventStore.retrieveAuditEvents(BSONDocument("correlationId" -> auditEvent.correlationId))) {
+      awaitAndAssert(auditEventStore.retrieveAuditEvents(Json.obj("correlationId" -> auditEvent.correlationId))) {
         _ mustBe List(auditEvent)
       }
     }
@@ -151,7 +151,7 @@ class AuditEventStoreISpec extends IntegrationSpec with TestDataGenerator {
     "return an empty list" in {
       val cid = generateTestSystemId("correlationId")
 
-      awaitAndAssert(auditEventStore.retrieveAuditEvents(BSONDocument("correlationId" -> cid))) {
+      awaitAndAssert(auditEventStore.retrieveAuditEvents(Json.obj("correlationId" -> cid))) {
         _ mustBe List.empty[Event]
       }
     }

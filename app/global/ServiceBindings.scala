@@ -19,16 +19,17 @@ package global
 import com.cjwwdev.config.{ConfigurationLoader, DefaultConfigurationLoader}
 import com.cjwwdev.featuremanagement.models.Features
 import com.cjwwdev.logging.filters.{DefaultRequestLoggingFilter, RequestLoggingFilter}
+import controllers.{DefaultQueryController, QueryController}
 import database.{AuditEventStore, DefaultAuditEventStore, DefaultFeedEventStore, FeedEventStore}
 import jobs.MessagePollingJob
 import play.api.inject.{Binding, Module}
 import play.api.{Configuration, Environment}
 import receivers.{DefaultReceiver, Receiver}
-import services.PollingService
+import services.{DefaultFetchService, FetchService, PollingService}
 
 class ServiceBindings extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
-    bindGlobals() ++ bindRabbit() ++ bindJobs() ++ bindServices() ++ bindStores()
+    bindGlobals() ++ bindServices() ++ bindStores() ++ bindControllers()
   }
 
   def bindGlobals(): Seq[Binding[_]] = Seq(
@@ -38,16 +39,13 @@ class ServiceBindings extends Module {
     bind(classOf[MessagingHubIndexing]).toSelf.eagerly()
   )
 
-  def bindRabbit(): Seq[Binding[_]] = Seq(
-    bind(classOf[Receiver]).to(classOf[DefaultReceiver]).eagerly()
-  )
 
-  def bindJobs(): Seq[Binding[_]] = Seq(
-    bind(classOf[MessagePollingJob]).toSelf.eagerly()
+  private def bindControllers(): Seq[Binding[_]] = Seq(
+    bind(classOf[QueryController]).to(classOf[DefaultQueryController]).eagerly()
   )
 
   def bindServices(): Seq[Binding[_]] = Seq(
-    bind(classOf[PollingService]).toSelf.eagerly()
+    bind(classOf[FetchService]).to(classOf[DefaultFetchService]).eagerly()
   )
 
   def bindStores(): Seq[Binding[_]] = Seq(

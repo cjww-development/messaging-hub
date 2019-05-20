@@ -24,10 +24,9 @@ import com.cjwwdev.mongo.responses.{MongoCreateResponse, MongoFailedCreate, Mong
 import javax.inject.Inject
 import models.auditing.Event
 import play.api.Configuration
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import reactivemongo.api.Cursor
 import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
 import reactivemongo.core.errors.DatabaseException
 import reactivemongo.play.json._
 
@@ -112,20 +111,20 @@ trait AuditEventStore extends DatabaseRepository with Logging with Logger {
     }
   }
 
-  def retrieveAuditEvent(selector: BSONDocument)(implicit ec: ExC): Future[Option[Event]] = {
+  def retrieveAuditEvent(selector: JsObject)(implicit ec: ExC): Future[Option[Event]] = {
     for {
       col <- collection
       fev <- col
-        .find[BSONDocument](selector)
+        .find[JsObject](selector)
         .one[Event](Event.outboundFormat, ec)
     } yield fev
   }
 
-  def retrieveAuditEvents(selector: BSONDocument, maxDocs: Int = -1)(implicit ec: ExC): Future[List[Event]] = {
+  def retrieveAuditEvents(selector: JsObject, maxDocs: Int = -1)(implicit ec: ExC): Future[List[Event]] = {
     for {
       col  <- collection
       list <- col
-        .find[BSONDocument](selector)
+        .find[JsObject](selector)
         .sort(Json.obj("createdAt" -> -1))
         .cursor[Event]()(Event.outboundFormat, implicitly)
         .collect[List](maxDocs, Cursor.FailOnError[List[Event]]())

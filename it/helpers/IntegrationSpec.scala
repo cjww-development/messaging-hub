@@ -25,16 +25,13 @@ trait IntegrationSpec
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
-    startWm()
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    resetWm()
   }
 
   override protected def afterAll(): Unit = {
     super.afterAll()
-    stopWm()
   }
 }
